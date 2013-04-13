@@ -44,37 +44,45 @@ def normalize(trX, teX):
   teX = (teX - ms) / sd
   return (trX, teX)
 
-def proof(): 
+def proof(which = ''): 
   # load test/train data
-  tr = loadtxt('train.csv', delimiter=',', skiprows=1)
+  tr = loadtxt('train' + which + '.csv', delimiter=',', skiprows=1)
   trY = tr[:, 0]
   trX = tr[:, 1:]
-  teX = loadtxt('test.csv', delimiter=',', skiprows=1)
+  print 'test' + which + '.csv'
+  teX = loadtxt('test' + which + '.csv', delimiter=',', skiprows=1)
   return (trX, trY, teX)
 
-def draft():
+from numpy.random import shuffle
+
+lteY = None
+def draft(which = ''):
   # load test/train data
-  tr = loadtxt('train.csv', delimiter=',', skiprows=1)
+  tr = loadtxt('train' + which + '.csv', delimiter=',', skiprows=1)
+  ix = range(tr.shape[0])
+  shuffle(ix)
+  tr = tr[ix, :]
   trY = tr[:, 0]
   trX = tr[:, 1:]
 
   # first 4000 training we will use for local training
   ltrX = trX[:4000,:]
   ltrY = trY[:4000]
-
   # last 1500 training we will use as local hold-out
   lteX = trX[4000:,:]
+  global lteY
   lteY = trY[4000:]
+
   return (ltrX, ltrY, lteX)
 
 def eval(pteY):
   # load test/train data
-  tr = loadtxt('train.csv', delimiter=',', skiprows=1)
-  trY = tr[:, 0]
-  lteY = trY[4000:]
-  ACC = float(sum(lteY==(pteY>.5)))/pteY.shape[0]
+  #tr = loadtxt('train_f01.csv', delimiter=',', skiprows=1)
+  #lteY = trY[4000:]
+  global lteY
 
   (fpr, tpr, thresholds) = roc_curve(lteY, pteY)
   AUC = auc(fpr, tpr)
+  ACC = float(sum(lteY==(pteY>.5)))/pteY.shape[0]
   return (AUC, ACC)
 
