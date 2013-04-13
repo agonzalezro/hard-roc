@@ -108,11 +108,12 @@ if __name__ == '__main__':
     # fit_intercept, penalty, c, result
     best = (None, None, None, -1)
 
-    for c in np.arange(1, 100, 0.05):
+    for c in np.arange(20, 80, 0.05):
         for penalty in ('l1', 'l2'):
             for fit_intercept in (True, False):
                 result = f(fit_intercept, penalty, c)
-                if best[2] < result:
+                print fit_intercept, penalty, c
+                if best[3] < result:
                     best = (fit_intercept, penalty, c, result)
                     print 'Working... The best for now is:' % c
                     _best()
