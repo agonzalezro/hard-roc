@@ -1,31 +1,20 @@
-from numpy import loadtxt, mean, std, vstack
 from sklearn import svm
-from sklearn.metrics import auc, roc_curve
+from numpy import arange
+from data import draft, proof, eval, save
 
-# load test/train data
-tr = loadtxt('train.csv', delimiter=',', skiprows=1)
-trY = tr[:, 0]
-trX = tr[:, 1:]
-teX = loadtxt('test.csv', delimiter=',', skiprows=1)
+#(trX, trY, teX) = proof()
+#clf = svm.SVC(probability=True, kernel='rbf', C = 5.0, gamma = 0.1)
+#clf.fit(trX, trY)
+#teY_svm01 = clf.predict_proba(teX)[:,1]
+#save(teY_svm01)
 
-# normalize
-ms = mean(vstack((trX,teX)), 0)
-sd = std(vstack((trX,teX)), 0)
-trX = (trX - ms) / sd
-teX = (teX - ms) / sd
 
-# first 4000 training we will use for local training
-ltrX = trX[:4000,:]
-ltrY = trY[:4000]
-
-# last 1500 training we will use as local hold-out
-lteX = trX[4000:,:]
-lteY = trY[4000:]
-
-clf = svm.SVC(probability=True)
-clf.fit(ltrX, ltrY)
-lteY_svm01 = clf.predict_proba(lteX)[:,1]
-
-(fpr, tpr, thresholds) = roc_curve(lteY, lteY_svm01)
-print 'AUC:', auc(fpr, tpr)
-print 'ACC:', float(sum(lteY==(lteY_svm01>.5)))/lteY_svm01.shape[0]
+(trX, trY, teX) = draft()
+print 'C gamma degree AUC ACC'
+for myC in [0.1, 1.0, 5.0, 10.0]:
+  for mygamma in [0.01, 0.1, 1.0, 5.0, 10.0]:
+    for mydegree in [2, 3, 4, 5]:
+      clf = svm.SVC(probability=True, kernel='poly', C = myC, gamma = mygamma, degree = mydegree)
+      clf.fit(trX, trY)
+      teY_svm01 = clf.predict_proba(teX)[:,1]
+      print myC, mygamma, mydegree, eval(teY_svm01)
