@@ -1,12 +1,10 @@
 import argparse
-import csv
+import pandas
 
 
-def process(file):
-    with open(file) as csvfile:
-        reader = csv.reader(csvfile, delimiter=',')
-        for row in reader:
-            print row
+def main(file):
+    csv = pandas.read_csv(file)
+    import ipdb; ipdb.set_trace()
 
 
 if __name__ == '__main__':
@@ -15,4 +13,4 @@ if __name__ == '__main__':
         'file', metavar='file', type=str, help='the test CSV file'
     )
     args = parser.parse_args()
-    process(args.file)
+    main(args.file)
