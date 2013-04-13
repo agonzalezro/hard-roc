@@ -8,6 +8,7 @@ def process(file):
         for row in reader:
             print row
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process some test data.')
     parser.add_argument(
