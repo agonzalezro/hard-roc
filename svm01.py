@@ -1,5 +1,6 @@
 from numpy import loadtxt, mean, std, vstack
 from sklearn import svm
+from sklearn.metrics import auc, roc_curve
 
 # load test/train data
 tr = loadtxt('train.csv', delimiter=',', skiprows=1)
@@ -21,8 +22,10 @@ ltrY = trY[:4000]
 lteX = trX[4000:,:]
 lteY = trY[4000:]
 
-clf = svm.SVC()
+clf = svm.SVC(probability=True)
 clf.fit(ltrX, ltrY)
-lteY_svm01 = clf.predict(lteX)
+lteY_svm01 = clf.predict_proba(lteX)[:,1]
 
-print 'Correct: ', sum(lteY_svm01 == lteY), '/', lteY.shape[0]
+(fpr, tpr, thresholds) = roc_curve(lteY, lteY_svm01)
+print 'AUC:', auc(fpr, tpr)
+print 'ACC:', float(sum(lteY==(lteY_svm01>.5)))/lteY_svm01.shape[0]
