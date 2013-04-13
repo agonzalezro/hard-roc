@@ -2,7 +2,7 @@ from data import draft, identify, eval, proof
 from numpy import unique, array, vstack
 
 def adj(w):
-  (trX, trY, teX) = proof()
+  (trX, trY, teX) = draft()
   identities = identify(vstack((trX, teX)), w)
   counts = dict()
   total = dict()

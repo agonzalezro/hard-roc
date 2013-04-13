@@ -49,7 +49,6 @@ def proof(which = ''):
   tr = loadtxt('train' + which + '.csv', delimiter=',', skiprows=1)
   trY = tr[:, 0]
   trX = tr[:, 1:]
-  print 'test' + which + '.csv'
   teX = loadtxt('test' + which + '.csv', delimiter=',', skiprows=1)
   return (trX, trY, teX)
 
@@ -65,13 +64,13 @@ def draft(which = ''):
   trY = tr[:, 0]
   trX = tr[:, 1:]
 
-  # first 4000 training we will use for local training
-  ltrX = trX[:4000,:]
-  ltrY = trY[:4000]
+  # first 2000 training we will use for local training
+  ltrX = trX[:2000,:]
+  ltrY = trY[:2000]
   # last 1500 training we will use as local hold-out
-  lteX = trX[4000:,:]
+  lteX = trX[2000:,:]
   global lteY
-  lteY = trY[4000:]
+  lteY = trY[2000:]
 
   return (ltrX, ltrY, lteX)
 
