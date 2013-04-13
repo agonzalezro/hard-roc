@@ -18,9 +18,9 @@ def do_svm(which = ''):
   return teY
 #save(teY)
 
-print eval(do_svm('_f03'))
+print eval(do_svm('_doubled'))
 
-(trX, trY, teX) = proof('_f03')
+(trX, trY, teX) = proof('_doubled')
 (trX, teX) = normalize(trX, teX)
 
 clf = svm.SVC(probability=True)
