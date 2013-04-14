@@ -97,13 +97,13 @@ class BetaNTF:
 
         # main loop
         for it in range(self.n_iter):
-            assert not(np.isnan(self.score(X)))
+            assert not(np.isnan(self.score(X, W)))
             if self.verbose:
                 if 'tick' not in locals():
                     tick = time.time()
                 print ('NTF model, iteration %d / %d, duration=%.1fms, cost=%f'
                        % (it, self.n_iter, (time.time() - tick) * 1000,
-                          self.score(X)))
+                          self.score(X, W)))
                 tick = time.time()
 
             #updating each factor in turn
@@ -139,7 +139,7 @@ class BetaNTF:
         print 'Done.'
         return self
 
-    def score(self, X):
+    def score(self, X, W):
         """Computes the total beta-divergence between the current model and X
 
         Parameters
@@ -152,7 +152,7 @@ class BetaNTF:
         out : float
             The beta-divergence
         """
-        return _betadiv(X, parafac(self.factors_), self.beta).sum()
+        return _betadiv(X*W, parafac(self.factors_)*W, self.beta).sum()
 
     def __getitem__(self, key):
         """gets NTF model
