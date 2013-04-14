@@ -56,6 +56,9 @@ def f(fit_intercept, penalty, C):
     p_train = model.predict_proba(X_train)
     p_train = p_train[:,1:2]
     auc_score_return = auc_score(y_train, p_train.T)
+
+    # REMOVE THIS REMOVE REMOVE REMOVE REMOVE
+    #return auc_score_return
     #print 'AuC score on training data:',auc_score_return
 
     ###########################
@@ -99,7 +102,8 @@ def f(fit_intercept, penalty, C):
     return auc_score_return
 
 if __name__ == '__main__':
-    print 'Original with l1 & c=1: %s\n' % f(False, 'l1', 1)
+    f(False, 'l1', 25.1)
+    '''print 'Original with l1 & c=1: %s\n' % f(False, 'l1', 1)
     print 'Original with l2 & c=1: %s\n' % f(False, 'l2', 1)
 
     def _best():
@@ -120,4 +124,4 @@ if __name__ == '__main__':
                     print ''
 
     print 'Finished! The best is:'
-    _best()
+    _best()'''
