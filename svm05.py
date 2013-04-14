@@ -2,22 +2,30 @@ from sklearn import svm
 from numpy import arange
 from data import draft, proof, eval, save, normalize
 
-def dosvm(gamma = 1.0):
-  which = '_f05'
+def do_draft(model, which):
   (trX, trY, teX) = draft(which)
   (trX, teX) = normalize(trX, teX)
-  clf = svm.SVC(probability = True, kernel='rbf', gamma = gamma, tol=0.00001)
-  clf.fit(trX, trY)
-  teY = clf.predict_proba(teX)[:,1]
+  model.fit(trX, trY)                
+  teY = model.predict_proba(teX)[:,1]
   print eval(teY)
+  return model
 
-#for gamma in [0.001, 0.002, 0.004, 0.006, 0.008]:
-#  dosvm(gamma)
+def do_proof(model, which):
+  (trX, trY, teX) = proof(which)
+  (trX, teX) = normalize(trX, teX)
+  model.fit(trX, trY)
+  teY = model.predict_proba(teX)[:,1]
+  save(teY, 'pred.csv')
+  return model
 
-#
-(trX, trY, teX) = proof('_f05')
-(trX, teX) = normalize(trX, teX)
-clf = svm.SVC(probability=True, kernel='rbf', gamma=0.002, tol=0.00001)
-clf.fit(trX, trY)
-teY = clf.predict_proba(teX)[:,1]
-save(teY, 'pred_svm06.csv')
+which = '_ad01'
+clf = svm.SVC(probability = True, kernel='rbf', gamma = 0.002, tol=0.00001)
+do_draft(clf, which)
+
+which = '_f08'
+clf = svm.SVC(probability = True, kernel='rbf', gamma = 0.002, tol=0.00001)
+do_draft(clf, which)
+
+which = '_f09'
+clf = svm.SVC(probability = True, kernel='rbf', gamma = 0.002, tol=0.00001)
+do_draft(clf, which)

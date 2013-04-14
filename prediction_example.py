@@ -7,7 +7,7 @@
 # written by Ferenc Huszár, PeerIndex
 
 from sklearn import linear_model
-from sklearn.metrics import auc_score
+from sklearn.metrics import auc, roc_curve
 import numpy as np
 
 ###########################

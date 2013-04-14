@@ -14,27 +14,40 @@ import numpy as np
 # LOADING TRAINING DATA
 ###########################
  
-trainfile = open('train.csv')
+trainfile = open('train_f09.csv')
 header = trainfile.next().rstrip().split(',')
  
 y_train = []
-X_train_A = []
-X_train_B = []
+X_train = []
  
 for line in trainfile:
     splitted = line.rstrip().split(',')
     label = int(splitted[0])
-    A_features = [float(item) for item in splitted[1:12]]
-    B_features = [float(item) for item in splitted[12:]]
     y_train.append(label)
-    X_train_A.append(A_features)
-    X_train_B.append(B_features)
+    X_train.append([float(item) for item in splitted[1:]])
+
 trainfile.close()
  
 y_train = np.array(y_train)
-X_train_A = np.array(X_train_A)
-X_train_B = np.array(X_train_B)
+
+testfile = open('test_f09.csv')
+#ignore the test header
+testfile.next()
  
+X_test = []
+for line in testfile:
+    splitted = line.rstrip().split(',')
+    X_test.append([float(item) for item in splitted])
+
+testfile.close()
+from numpy import array
+X_test = array(X_test)
+y_train = array(y_train)
+X_train = array(X_train)
+
+from data import normalize
+X_train, X_test = normalize(X_train, X_test)
+
 ###########################
 # EXAMPLE BASELINE SOLUTION USING SCIKIT-LEARN
 #
@@ -45,11 +58,7 @@ X_train_B = np.array(X_train_B)
 # http://fseoane.net/blog/2012/learning-to-rank-with-scikit-learn-the-pairwise-transform/
 ###########################
  
-def transform_features(x):
-    return np.log(1+x)
- 
-X_train = transform_features(X_train_A) - transform_features(X_train_B)
-model = linear_model.LogisticRegression(fit_intercept=False)
+model = linear_model.LogisticRegression(fit_intercept=True, penalty='l2', C=25.1)
 model.fit(X_train,y_train)
 # compute AuC score on the training data (BTW this is kind of useless due to overfitting, but hey, this is only an example solution)
 p_train = model.predict_proba(X_train)
@@ -62,25 +71,8 @@ print 'AuC score on training data:',auc(fpr, tpr)
 # READING TEST DATA
 ###########################
  
-testfile = open('test.csv')
-#ignore the test header
-testfile.next()
- 
-X_test_A = []
-X_test_B = []
-for line in testfile:
-    splitted = line.rstrip().split(',')
-    A_features = [float(item) for item in splitted[0:11]]
-    B_features = [float(item) for item in splitted[11:]]
-    X_test_A.append(A_features)
-    X_test_B.append(B_features)
-testfile.close()
- 
-X_test_A = np.array(X_test_A)
-X_test_B = np.array(X_test_B)
  
 # transform features in the same way as for training to ensure consistency
-X_test = transform_features(X_test_A) - transform_features(X_test_B)
 # compute probabilistic predictions
 p_test = model.predict_proba(X_test)
 #only need the probability of the 1 class
@@ -92,7 +84,7 @@ p_test = p_test[:,1:2]
 predfile = open('predictions.csv','w+')
  
 print >>predfile,','.join(header)
-for line in np.concatenate((p_test,X_test_A,X_test_B),axis=1):
-    print >>predfile, ','.join([str(item) for item in line])
+for p in p_test:
+    print >>predfile, ('%.5f'%p)
  
 predfile.close()
