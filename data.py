@@ -58,9 +58,15 @@ lteY = None
 def draft(which = ''):
   # load test/train data
   tr = loadtxt('train' + which + '.csv', delimiter=',', skiprows=1)
-  #ix = range(tr.shape[0])
-  #shuffle(ix)
-  #tr = tr[ix, :]
+  if not('ix' in globals()):
+    print 'shufflin'
+    global ix
+    ix = range(tr.shape[0])
+
+  else:
+    global ix
+
+  tr = tr[ix, :]
   trY = tr[:, 0]
   trX = tr[:, 1:]
 

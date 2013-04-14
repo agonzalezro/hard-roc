@@ -5,10 +5,10 @@ from numpy import vstack, array, log
 (trX, trY, teX) = proof()
 identities, counts, total = adj(trX, trY, teX, [8])
 
-trf = open('train_f04.csv', 'w')
+trf = open('train_f05.csv', 'w')
 print >>trf, 'header'
 
-tef = open('test_f04.csv', 'w')
+tef = open('test_f05.csv', 'w')
 print >>tef, 'header'
 
 for i in range(trX.shape[0]):
@@ -50,11 +50,19 @@ for i in range(trX.shape[0], stacked.shape[0]):
   pri = (counts[ri]+1) / (total[ri]+1)
 
   p = ple / (ple + pri)
-
   features = []
   for jj in range(11):
     features.append(stacked[i, jj] - stacked[i, jj+11])
     features.append(log(1+stacked[i, jj]) - log(1+stacked[i, jj+11]))
+
+  features.append(stacked[i, 0] - stacked[i, 1])
+  features.append(stacked[i, 11] - stacked[i, 12])
+
+  features.append(stacked[i, 4] / (stacked[i, 4] + stacked[i, 6]))
+  features.append(stacked[i, 15] / (stacked[i, 15] + stacked[i, 17]))
+
+  features.append(stacked[i, 3] / (stacked[i, 3] + stacked[i, 5]))
+  features.append(stacked[i, 14] / (stacked[i, 14] + stacked[i, 16]))
 
   features.append(counts[le])
   features.append(counts[ri])
