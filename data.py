@@ -3,7 +3,7 @@ from sklearn.metrics import auc, roc_curve
 
 def identify(XX, which):
   to = dict()
-  id = 0
+  id = 1
   identities = []
   def make_key(v, which):
     key = []
@@ -28,10 +28,10 @@ def identify(XX, which):
   return identities
 
 
-def save(pred):
+def save(pred, filename = 'pred.csv'):
   # load test/train data
   teX = loadtxt('test.csv', delimiter=',', skiprows=1)
-  pf = open('pred.csv', 'w')
+  pf = open(filename, 'w')
   for i in range(pred.shape[0]):
     print >>pf, ','.join([str(pred[i])] + map(str, list(teX[i, :])))
 
@@ -58,9 +58,9 @@ lteY = None
 def draft(which = ''):
   # load test/train data
   tr = loadtxt('train' + which + '.csv', delimiter=',', skiprows=1)
-  ix = range(tr.shape[0])
-  shuffle(ix)
-  tr = tr[ix, :]
+  #ix = range(tr.shape[0])
+  #shuffle(ix)
+  #tr = tr[ix, :]
   trY = tr[:, 0]
   trX = tr[:, 1:]
 

@@ -1,8 +1,24 @@
 from data import draft, identify, eval, proof
 from numpy import unique, array, vstack
 
-def adj(w):
-  (trX, trY, teX) = draft()
+def dead_simple(trX, trY, teX, w):
+  identities, counts, total = adj(trX, trY, teX, w)
+  teY = []
+  for i in range(trX.shape[0],vstack((trX, teX)).shape[0]):
+    le = identities[i][0]
+    ri = identities[i][1]
+
+    ple = (counts[le]+1) / (total[le]+1)
+    pri = (counts[ri]+1) / (total[ri]+1)
+
+    teY.append(ple / (ple + pri))
+
+  teY = array(teY)
+  return teY
+
+
+
+def adj(trX, trY, teX, w):
   identities = identify(vstack((trX, teX)), w)
   counts = dict()
   total = dict()
